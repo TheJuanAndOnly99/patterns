@@ -1,0 +1,17 @@
+{
+  "operations": [
+    {
+      "operation": "add",
+      "operands": [5, 10, 15]
+    },
+    {
+      "operation": "subtract",
+      "operands": [20, 8]
+    },
+    {
+      "operation": "multiply",
+      "operands": [2, 4, 6]
+    }
+  ]
+}
+
