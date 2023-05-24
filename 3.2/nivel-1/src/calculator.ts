@@ -11,9 +11,8 @@ interface InputData {
   operations: Calculation[];
 }
 
-// Construct the absolute path to input.json
-const jsonFilePath = path.resolve(__dirname, '../static/input.json');
 // Read the JSON file
+const jsonFilePath = path.resolve(__dirname, '../static/input.json');
 const jsonInput: string = fs.readFileSync(jsonFilePath, 'utf8');
 const inputData: InputData = JSON.parse(jsonInput);
 
@@ -23,11 +22,15 @@ const performCalculation = (calc: Calculation): number => {
   const middlewares = Middlewares.getInstance();
 
   // Log the operation
-  console.log(`Performing operation: ${operation} on ${operands}`);
-  // Modify the operands by applying a random middleware
-  middlewares.applyRandomMiddleware(operands);
-  // Log the new operands
-  console.log(`New operands: ${operands}`);
+  console.log(`Performing operation: '${operation}' on ${operands}`);
+
+  // Apply the middlewares in sequence
+  const middlewareNames = Object.keys(middlewares.getMiddlewares());
+  middlewareNames.forEach((middlewareName) => {
+    middlewares.applyMiddleware(middlewareName, operands);
+    // Log the new operands
+    console.log(`New operands: ${operands}`);
+  });
     
   switch (operation) {
     case 'add':
