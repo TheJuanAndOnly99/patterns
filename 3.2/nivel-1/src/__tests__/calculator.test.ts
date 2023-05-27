@@ -43,8 +43,8 @@ describe("Calculator", () => {
     });
 
 
-    expect(console.log).toHaveBeenCalledWith("Performing operation: add on 1,2,3");
-    expect(console.log).toHaveBeenCalledWith("Performing operation: subtract on 1,2,3");
-    expect(console.log).toHaveBeenCalledWith("Performing operation: multiply on 1,2,3");
+    expect(console.log).toHaveBeenCalledWith("Performing operation: 'add' on 1,2,3");
+    expect(console.log).toHaveBeenCalledWith("Performing operation: 'subtract' on 1,2,3");
+    expect(console.log).toHaveBeenCalledWith("Performing operation: 'multiply' on 1,2,3");
   });
 });

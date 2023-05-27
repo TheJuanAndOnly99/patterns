@@ -27,8 +27,8 @@ describe('Middlewares', () => {
     });
   });
 
-  it('should add the "cube", "square", and "divide by 2" middlewares', () => {
-    expect(Object.keys(middlewares.getMiddlewares())).toEqual(['cube', 'square', 'divide by 2']);
+  it('should add the "square", "cube", and "divide by 2" middlewares', () => {
+    expect(Object.keys(middlewares.getMiddlewares())).toEqual(['square', 'cube', 'divide by 2']);
   });
 
   it('should apply middlewares', () => {
