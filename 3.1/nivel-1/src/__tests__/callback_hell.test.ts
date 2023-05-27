@@ -11,7 +11,7 @@ describe('processFiles', () => {
     const filePath = outbox + '/text.txt';
     const expectedContent = 'dlrow olleh';
 
-    const fileContent = fs.readFileSync(filePath, 'utf-8');
+    const fileContent = await fs.readFileSync(filePath, 'utf-8');
 
     expect(fileContent).toEqual(expectedContent);
   });
