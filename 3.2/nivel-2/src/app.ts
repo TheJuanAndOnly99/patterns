@@ -1,25 +1,21 @@
-// class Item {
-//   /** 
-//   * @param name
-//   * @param price
-//   * @param currency
-//   */
-//   constructor(public name: string, public price: number, public currency: string) { }
-// }
+import currencyDecorator from './decorators/currencyDecorator';
 
-// type ItemType = {
-//   name: string;
-//   price: number;
-//   currency: string;
-// }
+class Item {
+	constructor(public name: string, public currency?: string, public amount?: number) {}
 
-// const items: ItemType[] = [];
+	@currencyDecorator
+	calculateCost(name: string, currency: string, amount: number) {
+		this.name = name;
+		this.currency = currency;
+		this.amount = amount;
+		return `Item: ${this.name}\nCost: ${currency} ${amount}`;
+	}
+}
 
-const convertor = {
-  convertToEuros: (price: number) => {
-    return price * 0.819908;
-  },
-};
+const item1 = new Item('item1');
+const item2 = new Item('item2');
 
-export default { convertor };
+item1.calculateCost('item1', 'USD', 100);
+item2.calculateCost('item2', 'GBP', 50);
 
+export default Item;
