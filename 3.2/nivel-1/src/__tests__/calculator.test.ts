@@ -1,50 +1,27 @@
-import performCalculation from "../calculator";
+import performCalculation from '../calculator';
+import input from '../input.json';
 
-// jest.mock("../static/input.json", () => ({
-//   operations: [
-//     {
-//       operation: "add",
-//       operands: [1, 2, 3],
-//     },
-//     {
-//       operation: "subtract",
-//       operands: [1, 2, 3],
-//     },
-//     {
-//       operation: "multiply",
-//       operands: [1, 2, 3],
-//     },
-//   ],
-// }));
+describe('Calculator', () => {
+	beforeEach(() => {
+		jest.spyOn(console, 'log').mockImplementation(() => {});
+	});
 
-describe("Calculator", () => {
+	it('should log the operation', () => {
+		performCalculation(input.operations[0]);
 
-  beforeEach(() => {
-    jest.spyOn(console, "log");
-  });
+		expect(console.log).toHaveBeenCalledWith("Performing operation: 'add' on 5,10,15");
+		expect(console.log).toHaveBeenCalledWith('Applying middleware: square');
+		expect(console.log).toHaveBeenCalledWith('New operands: 25,100,225');
+	});
 
-  it("should log the operation", () => {
-    const operations = [
-      {
-        operation: "add",
-        operands: [1, 2, 3],
-      },
-      {
-        operation: "subtract",
-        operands: [1, 2, 3],
-      },
-      {
-        operation: "multiply",
-        operands: [1, 2, 3],
-      },
-    ]
-    operations.forEach((operation) => {
-      performCalculation(operation);
-    });
+	it('should throw and error if given an unknown operation', () => {
+		const unknownOperation = {
+			operation: 'divide',
+			operands: [ 5, 10, 15 ]
+		};
 
-
-    expect(console.log).toHaveBeenCalledWith("Performing operation: 'add' on 1,2,3");
-    expect(console.log).toHaveBeenCalledWith("Performing operation: 'subtract' on 1,2,3");
-    expect(console.log).toHaveBeenCalledWith("Performing operation: 'multiply' on 1,2,3");
-  });
+		expect(() => {
+			performCalculation(unknownOperation);
+		}).toThrowError('Invalid operation');
+	});
 });
