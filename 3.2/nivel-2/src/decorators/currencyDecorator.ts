@@ -20,7 +20,7 @@ function currencyDecorator(_target: any, _propertyKey: string, descriptor: Prope
 			return originalMethod.call(this, itemName, currency, amount);
 		}
 		else {
-			return 'Currency not found in conversions.';
+			throw new Error('Currency not found in conversions.');
 		}
 	};
 	return descriptor;
