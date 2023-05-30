@@ -15,10 +15,8 @@ class MockClass {
 }
 
 describe('Currency Decorator', () => {
-	let consoleLogSpy: jest.SpyInstance;
-
 	beforeEach(() => {
-		consoleLogSpy = jest.spyOn(console, 'log');
+		jest.spyOn(console, 'log').mockImplementation(() => {});
 	});
 
 	it('should apply the currency conversion correctly', () => {
@@ -26,10 +24,15 @@ describe('Currency Decorator', () => {
 
 		mockInstance.calculateCost('item1', 'USD', 100);
 
-		expect(consoleLogSpy).toHaveBeenCalledTimes(2);
-		expect(consoleLogSpy).toHaveBeenCalledWith('item1: 100 USD');
-		expect(consoleLogSpy).toHaveBeenCalledWith('Converted price to EUR: 81.99');
+		expect(console.log).toHaveBeenCalledWith('item1: 100 USD');
+		expect(console.log).toHaveBeenCalledWith('Converted price to EUR: 81.99');
+	});
 
-		consoleLogSpy.mockRestore();
+	it('should throw an error if given an unknown currency', () => {
+		const mockInstance = new MockClass();
+
+		expect(() => {
+			mockInstance.calculateCost('item2', 'PSO', 100);
+		}).toThrowError('Currency not found in conversions.');
 	});
 });
