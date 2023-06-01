@@ -1,12 +1,5 @@
 import currencyDecorator from '../decorators/currencyDecorator';
 
-// Mocked conversion data
-jest.mock('../decorators/currency_conversions.json', () => ({
-	USD_EUR: 0.819908,
-	GBP_EUR: 1.156661,
-	CHF_EUR: 0.913791
-}));
-
 class MockClass {
 	@currencyDecorator
 	calculateCost(name: string, currency: string, amount: number) {
