@@ -45,6 +45,7 @@ async function main(messages: string[]): Promise<void> {
 	const subscriber = new Subscriber(channel, queueName);
 
 	for (const message of messages) {
+		console.log('Publishing message:', message);
 		await publisher.publish(message);
 	}
 
