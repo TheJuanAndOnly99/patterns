@@ -1,6 +1,16 @@
 import performCalculation from '../calculator';
 import input from '../input.json';
 
+//mock input.json
+jest.mock('../input.json', () => ({
+	operations: [
+		{
+			operation: 'add',
+			operands: [ 5, 10, 15 ]
+		}
+	]
+}));
+
 describe('Calculator', () => {
 	beforeEach(() => {
 		jest.spyOn(console, 'log').mockImplementation(() => {});
