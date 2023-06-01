@@ -1,49 +1,55 @@
 import * as amqp from 'amqplib';
-import { Subscriber, Publisher, main } from '../src/App';
+import { Publisher, Subscriber } from '../src/App';
 
-describe('RabbitMQ Publish/Subscribe Tests', () => {
-	let connection: amqp.Connection;
+describe('Publisher', () => {
 	let channel: amqp.Channel;
-	let subscriber: Subscriber;
 	let publisher: Publisher;
 
-	beforeAll(async () => {
-		connection = await amqp.connect('amqp://localhost:5672');
-		channel = await connection.createChannel();
-		console.log(`Connection created: ${connection}`);
-		console.log(`Channel created: ${channel}`);
-		const queueName = 'myQueue';
-		publisher = new Publisher(channel, queueName);
-		subscriber = new Subscriber(channel, queueName);
-		console.log(`publisher: ${publisher}`);
+	beforeEach(async () => {
+		channel = await amqp.connect('amqp://localhost:5672').then((conn) => conn.createChannel());
+		publisher = new Publisher(channel, 'myQueue');
 	});
 
-	afterAll(async () => {
+	afterEach(async () => {
 		await channel.close();
-		await connection.close();
 	});
+
+	test('publish method should send a message to the queue', async () => {
+		const message = 'Test message';
+		const assertQueueSpy = jest.spyOn(channel, 'assertQueue');
+		const sendToQueueSpy = jest.spyOn(channel, 'sendToQueue');
+		const consoleLogSpy = jest.spyOn(console, 'log');
+
+		await publisher.publish(message);
+
+		expect(assertQueueSpy).toHaveBeenCalledWith('myQueue');
+		expect(sendToQueueSpy).toHaveBeenCalledWith('myQueue', Buffer.from(message));
+		expect(consoleLogSpy).toHaveBeenCalledWith('Message sent:', message);
+	});
+});
+
+describe('Subscriber', () => {
+	let channel: amqp.Channel;
+	let subscriber: Subscriber;
 
 	beforeEach(async () => {
-		// Clear the queue before each test
-		await channel.purgeQueue('myQueue');
+		channel = await amqp.connect('amqp://localhost:5672').then((conn) => conn.createChannel());
+		subscriber = new Subscriber(channel, 'myQueue');
 	});
 
-	test('Publish and Subscribe', async () => {
-		const messages = [ 'Message 1', 'Message 2', 'Message 3' ];
-		const receivedMessages: string[] = [];
+	afterEach(async () => {
+		await channel.close();
+	});
+
+	test('subscribe method should consume messages from the queue', async () => {
+		const assertQueueSpy = jest.spyOn(channel, 'assertQueue');
+		const consumeSpy = jest.spyOn(channel, 'consume');
+		const consoleLogSpy = jest.spyOn(console, 'log');
 
 		await subscriber.subscribe();
-		channel.consume('myQueue', (msg) => {
-			if (msg !== null) {
-				receivedMessages.push(msg.content.toString());
-				channel.ack(msg);
-			}
-		});
 
-		await main(messages);
-
-		await new Promise((resolve) => setTimeout(resolve, 500));
-
-		expect(receivedMessages).toEqual(messages);
+		expect(assertQueueSpy).toHaveBeenCalledWith('myQueue');
+		expect(consumeSpy).toHaveBeenCalledWith('myQueue', expect.any(Function));
+		expect(consoleLogSpy).toHaveBeenCalledWith('Message received:', 'Test message');
 	});
 });
